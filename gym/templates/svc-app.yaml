@@ -1,0 +1,15 @@
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.svcapp.name}}
+spec:
+  selector:
+    app: {{ .Values.svcapp.lables.app}}
+  ports:
+  - port: {{ .Values.svcapp.ports.port}}
+    targetPort: {{ .Values.svcapp.ports.targetPort}}
+
+
+

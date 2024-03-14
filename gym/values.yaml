@@ -1,0 +1,56 @@
+# Default values for gym.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+
+# Deployment
+
+deployment:
+  replicas: 1
+  dep_name: gymie-dep
+  containers: 
+    name: gymie
+    image:
+      name: utsav0077/project:1.0
+      # name: utsav0077/pro1:latest
+    ports:
+      containerPort: 8000
+      name: app-port
+  data:
+    DB_CONNECTION: mysql
+    DB_HOST: gym-mysql
+    PORT: "3306"
+    DB-US: homestead
+  datas: 
+    DB_PASSWORD: "secret"
+
+# Statefulset
+
+mysql:
+  enabled: true
+  replicaCount: 1
+  auth:
+    rootPassword: "123456"
+    username: homestead
+    password: "secret"
+    database: homestead
+
+# Application-Service
+
+svcapp:
+  name: gymie-app
+  lables:
+    app: myapp-app 
+  ports:
+    port: 9001
+    targetPort: 8000 
+
+# Ingress
+
+ingress:
+  host: gymie.com
+  path: /
+  pathType: Prefix
+service:
+  name: gymie-app
+  port: 9001

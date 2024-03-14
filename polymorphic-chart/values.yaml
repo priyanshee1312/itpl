@@ -1,0 +1,313 @@
+# Default values for polymorphic-app.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride: ""
+fullnameOverride: ""
+prefixWithReleaseName:
+  enabled: true
+image:
+  repository:
+  tag:
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+volumeMounts: []
+
+volumes: []
+
+env: []
+envFrom: []
+
+# service template
+serviceTemplate:
+  name: svc
+
+  image: 
+
+  ## initContainers:
+  ##   - name: something
+  ##     image: alpine
+  ##     command: ['command', 'here']
+
+  initContainers: []
+
+  lifecycleHooks: {}
+
+  healthcheck:
+    enabled: false
+    type: httpGet
+    # path: /healthz
+    # port: http
+    # initialDelaySeconds: 30
+    # periodSeconds: 30
+
+  autoscaling: false
+  minReplicaCount: 1
+  maxReplicaCount: 1
+  env: []
+  envFrom: []
+  ports:
+  - name: http
+    containerPort: 80
+    protocol: TCP
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+    #  cpu: 100m
+    #  memory: 128Mi
+  securityContext: {}
+    # fsGroup: 1001
+    # runAsGroup: 1001
+    # runAsUser: 1001
+  dnsConfig: {}
+    # nameservers:
+    #   - 192.0.2.1 # this is an example
+    # searches:
+    #   - ns1.svc.cluster-domain.example
+    #   - my.dns.search.suffix
+    # options:
+    #   - name: ndots
+    #     value: "2"
+    #   - name: edns0
+  annotations: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  volumeMounts: []
+  volumes: []
+
+  service:
+    enabled: false
+    # className: nginx
+    type: ClusterIP
+    ports:
+    - name: http
+      port: 9001
+      targetPort: 8000
+      protocol: TCP
+    annotations: {}
+
+  ingress:
+    enabled: false
+    # className: nginx
+    annotations: {}
+    hosts:
+      - host: gymie.com
+        paths: 
+          path: /
+          pathType: Prefix
+
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+services:
+    - name: deployment
+      type: Statefulset
+      image:  
+        repository: utsav0077/project
+        tag: "1.0"
+      ## initContainers:
+      ##   - name: something
+      ##     image: alpine
+      ##     command: ['command', 'here']
+
+      initContainers: []
+
+      lifecycleHooks: {}
+
+      healthcheck:
+        enabled: false
+        type: httpGet
+        # path: /healthz
+        # port: http
+        # initialDelaySeconds: 30
+        # periodSeconds: 30
+
+      autoscaling: false
+      minReplicaCount: 1
+      maxReplicaCount: 1
+      env:
+        - name: DB_CONNECTION 
+          value: mysql
+        - name: DB_HOST
+          value: poly-mysql-svc
+        - name: DB_PORT 
+          value: "3306"
+        - name: DB_DATABASE 
+          value: homestead
+        - name: DB_USERNAME
+          value: homestead
+        - name: DB_PASSWORD
+          value: "secret"
+      envFrom: []
+      ports:
+      - name: http
+        containerPort: 8000
+        protocol: TCP
+      resources: {}
+        # We usually recommend not to specify default resources and to leave this as a conscious
+        # choice for the user. This also increases chances charts run on environments with little
+        # resources, such as Minikube. If you do want to specify resources, uncomment the following
+        # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+        # limits:
+        #  cpu: 100m
+        #  memory: 128Mi
+        # requests:
+        #  cpu: 100m
+        #  memory: 128Mi
+      securityContext: {}
+        # fsGroup: 1001
+        # runAsGroup: 1001
+        # runAsUser: 1001
+      dnsConfig: {}
+        # nameservers:
+        #   - 192.0.2.1 # this is an example
+        # searches:
+        #   - ns1.svc.cluster-domain.example
+        #   - my.dns.search.suffix
+        # options:
+        #   - name: ndots
+        #     value: "2"
+        #   - name: edns0
+      annotations: {}
+      nodeSelector: {}
+      tolerations: []
+      affinity: {}
+      volumeMounts: []
+      volumes: []
+
+      service:
+        enabled: true
+        # className: nginx
+        type: ClusterIP
+        ports:
+        - name: http
+          port: 9001
+          targetPort: 8000
+          protocol: TCP
+        annotations: {}
+
+      ingress:
+        enabled: true
+        # className: nginx
+        annotations: {}
+        hosts:
+        - host: gymie-poly.com
+          paths:
+            - path: /
+              pathType: Prefix
+
+              serviceName: 
+              servicePort: 9001 # Specify the service port for this path
+
+        tls: []
+        #  - secretName: chart-example-tls
+        #    hosts:
+        #      - chart-example.local
+    - type: StatefulSet
+      name: mysql
+      image:  
+        repository: mysql
+        tag: "8.0"
+      ## initContainers:
+      ##   - name: something
+      ##     image: alpine
+      ##     command: ['command', 'here']
+
+      initContainers: []
+
+      lifecycleHooks: {}
+
+      healthcheck:
+        enabled: false
+        type: httpGet
+        # path: /healthz
+        # port: http
+        # initialDelaySeconds: 30
+        # periodSeconds: 30
+
+      autoscaling: false
+      minReplicaCount: 1
+      maxReplicaCount: 1
+      env:
+        - name: MYSQL_DATABASE 
+          value: homestead
+        - name: MYSQL_USER 
+          value: homestead
+        - name: MYSQL_PASSWORD
+          value: secret   
+        - name: MYSQL_ROOT_PASSWORD 
+          value: "123456"  
+      envFrom: []
+      ports:
+      - name: http
+        containerPort: 3306
+        protocol: TCP
+      resources: {}
+        # We usually recommend not to specify default resources and to leave this as a conscious
+        # choice for the user. This also increases chances charts run on environments with little
+        # resources, such as Minikube. If you do want to specify resources, uncomment the following
+        # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+        # limits:
+        #  cpu: 100m
+        #  memory: 128Mi
+        # requests:
+        #  cpu: 100m
+        #  memory: 128Mi
+      securityContext: {}
+        # fsGroup: 1001
+        # runAsGroup: 1001
+        # runAsUser: 1001
+      dnsConfig: {}
+        # nameservers:
+        #   - 192.0.2.1 # this is an example
+        # searches:
+        #   - ns1.svc.cluster-domain.example
+        #   - my.dns.search.suffix
+        # options:
+        #   - name: ndots
+        #     value: "2"
+        #   - name: edns0
+      annotations: {}
+      nodeSelector: {}
+      tolerations: []
+      affinity: {}
+      volumeMounts: []
+      volumes: []
+
+      service:
+        enabled: true
+        # className: nginx
+        type: ClusterIP
+        ports:
+        - name: mysql
+          port: 3306
+          targetPort: 3306
+          protocol: TCP
+        annotations: {}
+
+      ingress:
+        enabled: false
+        # className: nginx
+        annotations: {}
+        hosts:
+          - host: gymie.com
+            paths: 
+              path: /
+              pathType: Prefix
+
+        tls: []
+        #  - secretName: chart-example-tls
+        #    hosts:
+        #      - chart-example.local
+

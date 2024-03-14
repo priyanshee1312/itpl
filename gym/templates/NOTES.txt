@@ -1,0 +1,46 @@
+=== Access The Application ===
+
+    http://gymie.com
+
+=== How to Use This Helm Chart ===
+
+1. Helm Chart Structure:
+   - Ensure you have a Helm chart directory structure set up.
+
+2. Configure Values:
+   - Edit the values.yaml file to define parameters for your Ingress resource:
+     - `ingress.host`: Define the hostname for your Ingress. (e.g., [gymie.com])
+     - `ingress.path`: Define the path for your Ingress.
+     - `service.name`: Define the name of the service to route traffic to.
+     - `service.port`: Define the port of the service to route traffic to.
+
+3. Create or Edit the Ingress Template:
+   - Navigate to the templates directory.
+   - Edit or create a YAML file (e.g., ingress.yaml) to define your Ingress resource.
+
+4. Ingress Template Example:
+   - Refer to the ingress.yaml file for an example template.
+   - Customize values using Helm templating syntax, such as .Release.Name and .Values.
+
+5. Install or Upgrade the Helm Chart:
+   - Use the 'helm install' or 'helm upgrade' command to deploy your Helm chart.
+   - Example:
+     helm install <release-name> <path-to-chart> <name-space>
+
+6. Verify Installation:
+   - Check your Kubernetes cluster for the deployed Ingress resource.
+   - Ensure that your Ingress controller is running to handle Ingress resources.
+   - Example:
+     kubectl get pods <name-space>
+     kubectl get svc <name-space>
+     kubectl get ing <name-space>
+
+=== Important Notes ===
+
+- Make sure your Kubernetes cluster has an Ingress controller installed and configured properly.
+- Validate your Ingress configuration to ensure proper routing of traffic.
+- Refer to the official Helm documentation for more advanced usage and troubleshooting.
+- Make sure when ever you are changing the host name then also change the name of host in NOTES.txt.
+
+Happy Helm Chart Deployment! :-)
+
